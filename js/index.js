@@ -1,11 +1,9 @@
-const incomeForm = document.querySelector('#income-form');
 const incomeNameArea = document.querySelector('#income-name');
 const incomeValueArea = document.querySelector('#income-value');
 const incomeAddButton = document.querySelector('#income-button');
 const incomeUlList = document.querySelector('#income-list');
 const incomeErrMsg = document.querySelector('.err.income');
 
-const outgoForm = document.querySelector('#outgo-form');
 const outgoNameArea = document.querySelector('#outgo-name');
 const outgoValueArea = document.querySelector('#outgo-value');
 const outgoAddButton = document.querySelector('#outgo-button');
@@ -32,18 +30,21 @@ let isEditedOutgo = false;
 let clickedIndex;
 
 function validate(value1, value2, type){
-    if(value1===''||value2===''||value1 < 0 || value2 < 0){
-        if(type === 'income'){
-            incomeErrMsg.innerText = 'Wszystkie pola formularza muszą być poprawnie wypełnione.'
-        }else{
-            outgoErrMsg.innerText = 'Wszystkie pola formularza muszą być poprawnie wypełnione.'
-        }
+    let msg = '';
+    if(value1===''||value2===''){
+        msg = 'Wszystkie pola formularza muszą być poprawnie wypełnione.';
+        type === 'income' ? incomeErrMsg.innerText = msg : outgoErrMsg.innerText = msg;
+        return false;
+    }else if(value1 < 0){
+        msg = 'Kwota musi byc większa od 0';
+        type === 'income' ? incomeErrMsg.innerText = msg : outgoErrMsg.innerText = msg;
         return false;
     }
+
     if(type === 'income'){
-        incomeErrMsg.innerText = ''
+        incomeErrMsg.innerText = msg;
     }else{
-        outgoErrMsg.innerText = ''
+        outgoErrMsg.innerText = msg;
     }
     return true;
 }
@@ -64,7 +65,7 @@ function createDeleteBtn(){
 function showList(type, el){
     let listArr;
     type === 'income' ? listArr = incomeList : listArr = outgoList;
-        let elList = document.createElement('li');
+        const elList = document.createElement('li');
         const btnEdit = createEditBtn();
         const btnDelete = createDeleteBtn();
 
@@ -177,12 +178,12 @@ function summarizeAll(){
     const sum = countPosition('income') - countPosition('outgo');
     let info;
     if(sum > 0){
-        info = `Możesz wydać jeszcze ${sum} złotych.`
+        info = `Możesz jeszcze wydać ${sum} złotych.`
 
     }else if(sum < 0){
-        info = `Bilans jest ujemny. Jesteś na minusie  ${sum} złotych.`
+        info = `Bilans jest ujemny. Jesteś na minusie  ${Math.abs(sum)} złotych.`
     }else{
-        info = `Bilans wynosi 0.`
+        info = `Bilans wynosi zero.`
     }
     return info;
 }
